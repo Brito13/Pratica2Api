@@ -4,6 +4,29 @@ h2 {
   margin-bottom: 3rem;
 }
 
+.boton {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.icons {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.boton a {
+  color: white;
+  text-decoration: none;
+
+  padding: 0.8rem;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
 header {
   display: flex;
   justify-content: center;
@@ -74,8 +97,14 @@ html {
 .entradas {
   border-radius: 10px;
   border: none;
+  display: block;
 }
 
 .cartas:hover {
   transform: translateY(-3%);
+}
+
+.entradas-1 {
+  display: block;
+  margin-bottom: 2rem;
 }
