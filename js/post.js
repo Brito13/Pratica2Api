@@ -1,11 +1,14 @@
-const listpost = async (userId) => {
-  const respuesta = await fetch(
-    `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
-  );
+const listpost = async (url) => {
+  // Extraer el parámetro userId de la Query String
+  const urlParams = new URLSearchParams(new URL(url).search);
+  const userId = urlParams.get("userId");
+
+  // Hacer la petición a la API con el parámetro userId
+  const respuesta = await fetch(url);
   const data = await respuesta.json();
 
   let tableBody = ``;
-  data.forEach((post, index) => {
+  data.forEach((post) => {
     tableBody += `<tr>
         <td>${post.userId}</td>
         <td>${post.id}</td>
@@ -17,7 +20,5 @@ const listpost = async (userId) => {
   document.getElementById("Table-Post").innerHTML = tableBody;
 };
 
-window.addEventListener("load", function () {
-  const userId = 1; // Puedes cambiar esto al userId deseado
-  listpost(userId);
-});
+// Ejemplo de cómo llamar la función
+listpost("https://jsonplaceholder.typicode.com/posts?userId=1");
