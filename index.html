@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Usuarios</title>
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,39 +12,42 @@
   <body>
     <div class="container">
       <div id="contenedor-cartas" class="row">
-        <script src="/js/cards.js"></script>
+        <!-- Las cartas serán insertadas aquí -->
       </div>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const contenedor = document.getElementById("contenedor-cartas");
+
+        fetch("https://jsonplaceholder.typicode.com/users")
+          .then((response) => response.json())
+          .then((users) => {
+            let cartas = "";
+            users.forEach((user) => {
+              const cartaTemplate = `
+                <div class="col-md-3 mb-3">
+                  <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">${user.name}</h5>
+                      <p class="card-text"><strong>Email:</strong> ${user.email}</p>
+                      <p class="card-text"><strong>Dirección:</strong> ${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}</p>
+                      <p class="card-text"><strong>Teléfono:</strong> ${user.phone}</p>
+                      <p class="card-text"><strong>Sitio web:</strong> <a href="http://${user.website}" target="_blank">${user.website}</a></p>
+                      <a href="/Usuario1/post.html?userId=${user.id}" class="btn btn-primary post-link">Post</a>
+                       <a href="/Usuario1/toDo.html?userId=${user.id}" class="btn btn-primary post-link">ToDo</a>
+                      <a href="http://127.0.0.1:5501/album.html?userId=${user.id}" class="btn btn-primary post-link">Album</a>
+                    </div>
+                  </div>
+                </div>
+              `;
+              cartas += cartaTemplate;
+            });
+
+            contenedor.innerHTML = cartas;
+          })
+          .catch((error) => console.error("Error fetching users:", error));
+      });
+    </script>
   </body>
 </html>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const contenedor = document.getElementById("contenedor-cartas");
-
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((users) => {
-        let cartas = "";
-        users.forEach((user) => {
-          const cartaTemplate = `
-            <div class="col-md-3">
-              <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                  <h5 class="card-title">${user.name}</h5>
-                  <p class="card-text">Username: ${user.username}</p>
-                  <p class="card-text">Email: ${user.email}</p>
-                  <a href="#" class="btn btn-primary">Post</a>
-                  <a href="#" class="btn btn-primary">ToDo</a>
-                  <a href="#" class="btn btn-primary">Album</a>
-                </div>
-              </div>
-            </div>
-          `;
-          cartas += cartaTemplate;
-        });
-        contenedor.innerHTML = cartas;
-      })
-      .catch((error) => console.error("Error fetching users:", error));
-  });
-</script>

@@ -1,24 +1,32 @@
 const listpost = async (url) => {
-  // Extraer el parámetro userId de la Query String
-  const urlParams = new URLSearchParams(new URL(url).search);
-  const userId = urlParams.get("userId");
+  document.addEventListener("DOMContentLoaded", function () {
+    const contenedor = document.getElementById("contenedor-cartas");
 
-  // Hacer la petición a la API con el parámetro userId
-  const respuesta = await fetch(url);
-  const data = await respuesta.json();
-
-  let tableBody = ``;
-  data.forEach((post) => {
-    tableBody += `<tr>
-        <td>${post.userId}</td>
-        <td>${post.id}</td>
-        <td>${post.title}</td>
-        <td>${post.body}</td>
-      </tr>`;
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((users) => {
+        let cartas = "";
+        users.forEach((user) => {
+          const cartaTemplate = `
+    <div class="col-md-3 mb-3">
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">${user.name}</h5>
+        <p class="card-text"><strong>Email:</strong> ${user.email}</p>
+        <p class="card-text"><strong>Dirección:</strong> ${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}</p>
+        <p class="card-text"><strong>Teléfono:</strong> ${user.phone}</p>
+        <p class="card-text"><strong>Sitio web:</strong> <a href="http://${user.website}" target="_blank">${user.website}</a></p>
+        <a href="#" class="btn btn-primary">Post</a>
+        <a href="#" class="btn btn-primary">ToDo</a>
+        <a href="#" class="btn btn-primary">Album</a>
+      </div>
+    </div>
+  </div>
+`;
+          cartas += cartaTemplate;
+        });
+        contenedor.innerHTML = cartas;
+      })
+      .catch((error) => console.error("Error fetching users:", error));
   });
-
-  document.getElementById("Table-Post").innerHTML = tableBody;
 };
-
-// Ejemplo de cómo llamar la función
-listpost("https://jsonplaceholder.typicode.com/posts?userId=1");
