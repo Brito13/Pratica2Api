@@ -41,7 +41,7 @@
 
         const displayPosts = (posts) => {
           postsContainer.innerHTML = "";
-          posts.forEach((post) => {
+          posts.map((post) => {
             const postElement = document.createElement("div");
             postElement.className = "col-md-4 mb-3";
             postElement.innerHTML = `

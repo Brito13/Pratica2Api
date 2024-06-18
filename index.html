@@ -25,6 +25,11 @@
           .then((users) => {
             let cartas = "";
             users.forEach((user) => {
+              // Ordenar álbumes por título
+              const sortUsuarios = users.sort((a, b) =>
+                a.name.localeCompare(b.name)
+              );
+
               const cartaTemplate = `
                 <div class="col-md-3 mb-3">
                   <div class="card" style="width: 18rem;">

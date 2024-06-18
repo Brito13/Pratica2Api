@@ -61,7 +61,11 @@
             );
             if (response.ok) {
               const albums = await response.json();
-              displayAlbums(albums);
+              // Ordenar álbumes por título
+              const sortedAlbums = albums.sort((a, b) =>
+                a.title.localeCompare(b.title)
+              );
+              displayAlbums(sortedAlbums);
             } else {
               console.error(`Error al acceder a la API: ${response.status}`);
             }
@@ -80,39 +84,44 @@
               return photos;
             } else {
               console.error(`Error al acceder a la API: ${response.status}`);
-              return null;
+              return [];
             }
           } catch (error) {
             console.error(`Error en la solicitud: ${error}`);
-            return null;
+            return [];
           }
         };
 
         const displayAlbums = async (albums) => {
           albumsContainer.innerHTML = "";
-          for (let album of albums) {
-            const albumElement = document.createElement("div");
-            albumElement.className = "col-md-4 mb-3";
-            const photos = await fetchAlbumPhotos(album.id);
-            const thumbnailUrl =
-              photos.length > 0 ? photos[0].thumbnailUrl : "";
-            albumElement.innerHTML = `
-            <div class="card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title">${album.title}</h5>
-                <p class="card-text">UserID: ${album.userId}</p>
-                <a href="#" class="album-thumbnail" data-album-id="${album.id}">
-                Ver fotos
-                </a>
+
+          // Utilizar map para crear los elementos del DOM
+          const albumElements = await Promise.all(
+            albums.map(async (album) => {
+              const photos = await fetchAlbumPhotos(album.id);
+              const thumbnailUrl =
+                photos.length > 0 ? photos[0].thumbnailUrl : "";
+              return `
+            <div class="col-md-4 mb-3">
+              <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">${album.title}</h5>
+                  <p class="card-text">UserID: ${album.userId}</p>
+                  <a href="#" class="album-thumbnail" data-album-id="${album.id}">
+                    Ver fotos
+                  </a>
+                </div>
               </div>
             </div>
           `;
-            albumsContainer.appendChild(albumElement);
-          }
+            })
+          );
+
+          // Insertar todos los elementos de álbumes en el contenedor
+          albumsContainer.innerHTML = albumElements.join("");
 
           // Agregar event listeners a los enlaces de miniaturas de los álbumes
-          const thumbnails = document.querySelectorAll(".album-thumbnail");
-          thumbnails.forEach((thumbnail) => {
+          document.querySelectorAll(".album-thumbnail").forEach((thumbnail) => {
             thumbnail.addEventListener("click", async function (event) {
               event.preventDefault();
               const albumId = this.getAttribute("data-album-id");
@@ -124,15 +133,15 @@
 
         const displayAlbumPhotos = (photos) => {
           const albumImagesContainer = document.getElementById("album-images");
-          albumImagesContainer.innerHTML = "";
-          photos.forEach((photo) => {
-            const photoElement = document.createElement("div");
-            photoElement.className = "col-md-3 mb-3";
-            photoElement.innerHTML = `
+          albumImagesContainer.innerHTML = photos
+            .map(
+              (photo) => `
+          <div class="col-md-3 mb-3">
             <img src="${photo.url}" alt="${photo.title}" class="img-fluid" />
-          `;
-            albumImagesContainer.appendChild(photoElement);
-          });
+          </div>
+        `
+            )
+            .join("");
           $("#albumModal").modal("show");
         };
 
